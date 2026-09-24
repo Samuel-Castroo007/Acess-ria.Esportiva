@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Admin de Horários | Samuel Castro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,700;0,800;1,700;1,800&family=Poppins:wght@600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand:#1a6175;
+  --brand-hover:#247e96;
+  --brand-deep:#0f3b48;
+  --ink:#1e2a2e;
+  --muted:#4d6670;
+  --gray:#f5f7f8;
+  --line:#d9e2e6;
+  --free:#1e8e5a;
+  --free-bg:#e8f7ef;
+  --busy:#c0392b;
+  --busy-bg:#fbebe9;
+  --display:'Montserrat',system-ui,sans-serif;
+  --sub:'Poppins',system-ui,sans-serif;
+  --text:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--gray);color:var(--ink);font:400 1rem/1.5 var(--text)}
+.wrap{max-width:760px;margin:0 auto;padding:0 1.25rem}
+header{background:#fff;border-bottom:1px solid var(--line);padding:1.25rem 0}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+header h1{font:800 1.15rem var(--display);color:var(--brand);margin:0}
+header h1 small{display:block;font:500 .8rem var(--text);color:var(--muted);text-transform:none;letter-spacing:0}
+main{padding:2rem 0 4rem}
+
+/* Login / setup */
+.login-box{max-width:400px;margin:3rem auto;background:#fff;border:1px solid var(--line);border-radius:12px;padding:2rem}
+.login-box h2{font:700 1.1rem var(--sub);margin:0 0 .3rem;color:var(--brand)}
+.login-box p{color:var(--muted);margin:0 0 1.25rem;font-size:.95rem}
+.login-box input[type=password],.login-box input[type=text]{width:100%;padding:.75rem .9rem;border:1px solid var(--line);border-radius:8px;font:inherit;margin-bottom:.6rem}
+.login-box input:focus{outline:2px solid var(--brand);outline-offset:1px}
+.remember{display:flex;align-items:center;gap:.5rem;font-size:.9rem;color:var(--muted);margin:.2rem 0 1rem}
+.remember input{width:auto;margin:0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;width:100%;min-height:48px;padding:.7rem 1.2rem;background:var(--brand);color:#fff;font:600 1rem var(--text);border:0;border-radius:8px;cursor:pointer;transition:background .2s}
+.btn:hover{background:var(--brand-hover)}
+.btn:disabled{opacity:.6;cursor:default}
+.err{color:var(--busy);font-size:.9rem;min-height:1.2em;margin:-.2rem 0 .75rem}
+.token-hint{font-size:.82rem;color:var(--muted);margin-top:1rem;line-height:1.5}
+.token-hint a{color:var(--brand)}
+.token-hint ol{margin:.4rem 0 0;padding-left:1.2rem}
+.token-hint li{margin-bottom:.25rem}
+.setup-box code{background:var(--gray);padding:.1rem .35rem;border-radius:4px;font-size:.85em}
+
+/* Painel */
+.panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:.75rem;flex-wrap:wrap}
+.panel-head p{color:var(--muted);font-size:.9rem;margin:.2rem 0 0}
+.repo-tag{font-size:.78rem;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:999px;padding:.3rem .7rem;white-space:nowrap}
+.logout{background:none;border:1px solid var(--line);border-radius:8px;padding:.5rem .9rem;font:600 .85rem var(--text);color:var(--muted);cursor:pointer}
+.logout:hover{border-color:var(--brand);color:var(--brand)}
+
+.banner{display:flex;align-items:center;justify-content:space-between;gap:1rem;background:var(--busy-bg);color:var(--busy);border:1px solid #f3cac5;border-radius:8px;padding:.75rem 1rem;font-size:.9rem;font-weight:600;margin-bottom:1.25rem}
+.banner button{background:none;border:0;color:inherit;font:inherit;font-weight:700;cursor:pointer}
+.stamp{font-size:.82rem;color:var(--muted);margin-bottom:1.25rem}
+
+.day-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:1.5rem;margin-bottom:1.25rem;position:relative}
+.day-card h3{font:800 1.1rem var(--display);color:var(--brand);margin:0 0 1rem}
+.instr{display:flex;align-items:center;justify-content:space-between;gap:1rem;background:var(--gray);border-left:4px solid var(--brand);border-radius:6px;padding:.65rem 1rem;margin-bottom:1.1rem;font:600 .9rem var(--text);color:var(--brand-deep)}
+.instr small{display:block;font:500 .78rem var(--text);color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.6rem}
+.slot-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3rem;padding:.8rem .5rem;border-radius:8px;border:1px solid transparent;font:600 .95rem var(--text);cursor:pointer;transition:transform .1s,opacity .15s}
+.slot-btn:active{transform:scale(.97)}
+.slot-btn:disabled{cursor:default}
+.slot-btn b{font-size:.75rem;text-transform:uppercase;letter-spacing:.03em}
+.slot-btn.livre{background:var(--free-bg);color:var(--free);border-color:#c7ebd7}
+.slot-btn.ocupado{background:var(--busy-bg);color:var(--busy);border-color:#f3cac5}
+.slot-btn.saving{opacity:.55}
+.slot-btn span{font-size:.65rem;opacity:.75}
+.hint{color:var(--muted);font-size:.85rem;margin-top:1.5rem;line-height:1.5}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>Samuel Castro<small>Admin de Horários</small></h1>
+    <button class="logout" id="logoutBtn" hidden>Sair</button>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- Configuração pendente: GITHUB_OWNER/REPO ainda não foram preenchidos -->
+  <section id="setupView" hidden>
+    <div class="login-box setup-box">
+      <h2>Falta configurar o repositório</h2>
+      <p>Abra o arquivo <code>horarios-data.js</code> e troque <code>GITHUB_OWNER</code> e <code>GITHUB_REPO</code> pelo seu usuário e pelo nome do repositório no GitHub. Depois publique de novo e recarregue esta página.</p>
+    </div>
+  </section>
+
+  <!-- Login com token do GitHub -->
+  <section id="loginView" hidden>
+    <div class="login-box">
+      <h2>Área restrita</h2>
+      <p>Cole seu token do GitHub para gerenciar os horários.</p>
+      <form id="loginForm">
+        <input type="password" id="tokenInput" placeholder="Token do GitHub" autocomplete="off">
+        <label class="remember"><input type="checkbox" id="rememberInput"> Lembrar neste aparelho</label>
+        <p class="err" id="loginErr"></p>
+        <button class="btn" type="submit" id="loginBtn">Entrar</button>
+      </form>
+      <div class="token-hint">
+        Ainda não tem um token? Crie um <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">token de acesso pessoal (fine-grained)</a>:
+        <ol>
+          <li>Em "Repository access", selecione só o repositório deste site.</li>
+          <li>Em "Permissions → Contents", escolha <strong>Read and write</strong>.</li>
+          <li>Gere o token e cole aqui. Guarde-o em local seguro — ele não aparece de novo no GitHub.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- Painel -->
+  <section id="panelView" hidden>
+    <div class="panel-head">
+      <div>
+        <h2 style="font:700 1.2rem var(--sub);margin:0;color:var(--ink)">Gerenciar horários</h2>
+        <p>Toque em um horário para alternar entre Livre e Ocupado. A alteração é salva no GitHub na hora.</p>
+      </div>
+      <span class="repo-tag" id="repoTag"></span>
+    </div>
+    <p class="stamp" id="stamp"></p>
+    <div id="banner" hidden class="banner">
+      <span id="bannerMsg"></span>
+      <button type="button" id="bannerRetry">Tentar de novo</button>
+    </div>
+    <div id="days"></div>
+    <p class="hint">Os horários de Instrução (turma fechada) aparecem só como informação — não têm status para alternar.<br>
+      As mudanças feitas aqui aparecem no site para qualquer pessoa, em qualquer aparelho, assim que a página é atualizada.</p>
+  </section>
+
+</main>
+
+<script src="horarios-data.js"></script>
+<script>
+const TOKEN_KEY = 'sc_admin_token';
+
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+const setupView = $('#setupView');
+const loginView = $('#loginView');
+const panelView = $('#panelView');
+const logoutBtn = $('#logoutBtn');
+const loginBtn = $('#loginBtn');
+
+let token = null;
+let currentMap = {};
+let currentSha = null;
+
+function showBanner(msg, onRetry) {
+  $('#bannerMsg').textContent = msg;
+  $('#banner').hidden = false;
+  $('#bannerRetry').onclick = () => { $('#banner').hidden = true; if (onRetry) onRetry(); };
+}
+function hideBanner() { $('#banner').hidden = true; }
+
+function stampNow() {
+  $('#stamp').textContent = 'Atualizado às ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+}
+
+function renderDays() {
+  $('#days').innerHTML = HorariosData.SCHEDULE.map(d => `
+    <article class="day-card">
+      <h3>${d.day}</h3>
+      <div class="instr"><small>Instrução</small>${d.instrucao}</div>
+      <div class="slots">
+        ${d.slots.map(s => {
+          const st = currentMap[HorariosData.slotId(d.key, s)] === 'ocupado' ? 'ocupado' : 'livre';
+          return `<button type="button" class="slot-btn ${st}" data-day="${d.key}" data-slot="${s}">
+            <span>${s}</span><b>${st === 'livre' ? 'Livre' : 'Ocupado'}</b>
+          </button>`;
+        }).join('')}
+      </div>
+    </article>`
+  ).join('');
+}
+
+// Clique em qualquer horário alterna o status (delegação de evento)
+$('#days').addEventListener('click', e => {
+  const btn = e.target.closest('.slot-btn');
+  if (!btn || btn.disabled) return;
+  toggleSlot(btn.dataset.day, btn.dataset.slot, btn);
+});
+
+async function toggleSlot(dayKey, slot, btn, isRetry) {
+  const id = HorariosData.slotId(dayKey, slot);
+  const next = currentMap[id] === 'ocupado' ? 'livre' : 'ocupado';
+  btn.disabled = true;
+  btn.classList.add('saving');
+  try {
+    const newMap = { ...currentMap, [id]: next };
+    const newSha = await HorariosData.saveStatusFile(
+      token, newMap, currentSha,
+      `Horários: ${dayKey} ${slot} -> ${next}`
+    );
+    currentMap = newMap;
+    currentSha = newSha;
+    hideBanner();
+    renderDays();
+    stampNow();
+  } catch (err) {
+    if (err.status === 409 && !isRetry) {
+      // Alguém mais salvou entre a leitura e a gravação: recarrega e tenta de novo.
+      try {
+        const fresh = await HorariosData.fetchStatusFile(token);
+        currentMap = fresh.map;
+        currentSha = fresh.sha;
+        return toggleSlot(dayKey, slot, btn, true);
+      } catch (err2) { /* cai no showBanner abaixo */ }
+    }
+    renderDays(); // volta ao estado real (sem a alteração otimista)
+    showBanner('Não foi possível salvar: ' + err.message);
+  }
+}
+
+async function loadPanel() {
+  panelView.hidden = false;
+  loginView.hidden = true;
+  setupView.hidden = true;
+  logoutBtn.hidden = false;
+  $('#repoTag').textContent = HorariosData.GITHUB_OWNER + '/' + HorariosData.GITHUB_REPO;
+  $('#stamp').textContent = 'Carregando horários…';
+  try {
+    const { map, sha } = await HorariosData.fetchStatusFile(token);
+    currentMap = map;
+    currentSha = sha;
+    hideBanner();
+    renderDays();
+    stampNow();
+  } catch (err) {
+    $('#stamp').textContent = '';
+    showBanner('Não foi possível carregar os horários: ' + err.message, loadPanel);
+  }
+}
+
+function showLogin() {
+  panelView.hidden = true;
+  setupView.hidden = true;
+  loginView.hidden = false;
+  logoutBtn.hidden = true;
+  $('#tokenInput').value = '';
+  $('#loginErr').textContent = '';
+}
+
+$('#loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const value = $('#tokenInput').value.trim();
+  if (!value) return;
+  loginBtn.disabled = true;
+  loginBtn.textContent = 'Verificando…';
+  $('#loginErr').textContent = '';
+  try {
+    await HorariosData.validateToken(value);
+    token = value;
+    if ($('#rememberInput').checked) localStorage.setItem(TOKEN_KEY, value);
+    await loadPanel();
+  } catch (err) {
+    $('#loginErr').textContent = err.message;
+  } finally {
+    loginBtn.disabled = false;
+    loginBtn.textContent = 'Entrar';
+  }
+});
+
+logoutBtn.addEventListener('click', () => {
+  token = null;
+  localStorage.removeItem(TOKEN_KEY);
+  showLogin();
+});
+
+// Inicialização
+if (!HorariosData.configured()) {
+  setupView.hidden = false;
+} else {
+  const saved = localStorage.getItem(TOKEN_KEY);
+  if (saved) {
+    token = saved;
+    loadPanel().catch(() => showLogin());
+  } else {
+    showLogin();
+  }
+}
+</script>
+</body>
+</html>
