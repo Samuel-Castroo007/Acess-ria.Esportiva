@@ -20,8 +20,8 @@
    ===================================================================== */
 (function (global) {
 
-  const GITHUB_OWNER  = 'SEU-USUARIO';       // seu usuário do GitHub
-  const GITHUB_REPO   = 'SEU-REPOSITORIO';   // nome do repositório no GitHub
+  const GITHUB_OWNER  = 'Samuel-Castroo007';       // seu usuário do GitHub
+  const GITHUB_REPO   = 'Acess-ria.Esportiva';   // nome do repositório no GitHub
   const GITHUB_BRANCH = 'main';              // branch onde o site é publicado
   const STATUS_FILE   = 'horarios-status.json';
 
